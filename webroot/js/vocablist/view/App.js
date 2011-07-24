@@ -8,9 +8,7 @@ $(function(){
     el: $("#container"),
 
 		focused_pair: null,	// this is set when a row is highlighted
-
-    // Our template for the line of statistics at the bottom of the app.
-    //statsTemplate: _.template($('#stats-template').html()),
+		list: null, 
 
     // Delegated events for creating new items, and clearing completed ones.
     events: {
@@ -18,21 +16,26 @@ $(function(){
       "click #remove-button": "remove"
     },
 
-    // At initialization we bind to the relevant events on the `Todos`
-    // collection, when items are added or changed. Kick things off by
-    // loading any preexisting todos that might be saved in *localStorage*.
     initialize: function() {
 			// make sure this refers to this AppView
       _.bindAll(this, 'addOne', 'addAll', 'render');
 
-      //this.input    = this.$("#new-todo");
+			this.list = new VocabList.Collection; 
 
-      MyList.bind('add',     this.addOne);
-      MyList.bind('reset',   this.addAll);
-      MyList.bind('all',     this.render);
+      this.list.bind('add',     this.addOne);
+      this.list.bind('reset',   this.addAll);
+      this.list.bind('all',     this.render);
 
-      MyList.fetch();
+			this.initEditTools();			
     },
+
+		initEditTools: function() {
+			
+			var edit_tool = $('#edit-tools');
+			var container = this.el;
+			var left_position = (container.position().left + container.width())  - edit_tool.width()-16;
+			$('#edit-tools').css({left: left_position});
+		},
 
     // Re-rendering the App just means refreshing the statistics -- the rest
     // of the app doesn't change.
@@ -46,17 +49,19 @@ $(function(){
 
     addOne: function(pair) {
       var view = new VocabList.View.VocabPair({model: pair});
+
       this.$("#vocab").append(view.render().el);
     },
 
     // Add all items in the **Todos** collection at once.
     addAll: function() {
-      MyList.each(this.addOne);
+      this.list.each(this.addOne);
     },
 
     create: function(e) {
-      //if (e.keyCode != 13) return;
-      MyList.create(this.newAttributes());
+      
+			var new_pair = this.list.create(this.newAttributes());
+			MyApp.$('section:last-child input:first-child').focus();
     },
 		
     // Generate the attributes for a new Todo item.
@@ -70,38 +75,25 @@ $(function(){
 
 		remove: function() {
 			
-			this.focused_pair.clear();
+			// find next pair to focus on
+			var next_pair = $(this.focused_pair.el).next('section').find('input:first-child');
 			
-			// TODO: handle case if this is the last item
-			this.$('section:first-child input:first-child').trigger('focus');
-		},
+			if (next_pair.length === 0) {
+				
+				next_pair = $(this.focused_pair.el).prev('section').find('input:first-child');
+			}
+						
+			this.focused_pair.clear();
 
-/*
-    // If you hit return in the main input field, create new **Todo** model,
-    // persisting it to *localStorage*.
-    createOnEnter: function(e) {
-      if (e.keyCode != 13) return;
-      Todos.create(this.newAttributes());
-      this.input.val('');
-    },
-
-    // Clear all done todo items, destroying their models.
-    clearCompleted: function() {
-      _.each(Todos.done(), function(todo){ todo.clear(); });
-      return false;
-    },
-
-    // Lazily show the tooltip that tells you to press `enter` to save
-    // a new todo item, after one second.
-    showTooltip: function(e) {
-      var tooltip = this.$(".ui-tooltip-top");
-      var val = this.input.val();
-      tooltip.fadeOut();
-      if (this.tooltipTimeout) clearTimeout(this.tooltipTimeout);
-      if (val == '' || val == this.input.attr('placeholder')) return;
-      var show = function(){ tooltip.show().fadeIn(); };
-      this.tooltipTimeout = _.delay(show, 1000);
-    }*/
-
+			if (next_pair.length > 0) {
+				
+				next_pair.trigger('focus');
+				
+			}	else {
+				
+				this.create();
+			}
+		}
+		
   });
 });

@@ -1,49 +1,6 @@
-
-
-/*
-var vocablist = {
-	
-	section_height: null,
-	
-	add: function() {
-
-		var section = $('#vocab section:first-child').clone();
-		section.find('input').val('');
-		
-		$('#vocab').append(section);
-		
-		section.find('input:first-child').focus();
-	},
-	
-	inputFocus: function() {
-		
-		$('#vocab section.active').removeClass('active');
-		
-		var section = $(this).parent();
-		section.addClass('active');
-		
-		$('#edit-tools').css({top: section.position().top + vocablist.section_height+1}).show();
-	}
-};
-*/
 $(function() {
 
-	/*
-	// set position of edit vocab tool
-	var edit_tool = $('#edit-tools');
-	var container = $('#container');
-	var left_position = (container.position().left + container.width())  - edit_tool.width()-16;
-	$('#edit-tools').css({left: left_position});
-
-	vocablist.section_height = $('#vocab section:first-child').height();
-
-	// bind events
-
-	$('#vocab section input').live('focus', vocablist.inputFocus);
-	$('#vocab section:first-child input:first-child').trigger('focus');
-	*/
-	
-	// set-up icons
+	// set-up icons using Raphael
 	
 	var paper = Raphael("add-button", 32, 32);
 	var hide = {fill: "#FFF", opacity: 0};
@@ -64,7 +21,6 @@ $(function() {
 	 		})*/
 		//.click(vocablist.add);
 });
-
 
 // Raphaël icons
 

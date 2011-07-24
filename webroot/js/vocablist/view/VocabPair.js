@@ -11,23 +11,16 @@ $(function(){
 
 	  // The DOM events specific to an item.
 	  events: {
-	    "focus input":     "focus"
-		/*
-	    "click .check"              : "toggleDone",
-	    "dblclick div.todo-content" : "edit",
-	    "click span.todo-destroy"   : "clear",
-	    "keypress .todo-input"      : "updateOnEnter"
-			*/
+	    "focus input":     "focus",
+			"keypress input":  "moveNextOnEnter"
 	  },
 
 		height: null,	// set height (set in CSS) on load.
 
-	  // The TodoView listens for changes to its model, re-rendering. Since there's
-	  // a one-to-one correspondence between a **Todo** and a **TodoView** in this
-	  // app, we set a direct reference on the model for convenience.
 	  initialize: function() {
-	    _.bindAll(this, 'render', 'close');
-	    this.model.bind('change', this.render);
+	    _.bindAll(this, 'render');
+	    //this.model.bind('change', this.render);
+	
 	    this.model.view = this;
 	  },
 
@@ -44,32 +37,31 @@ $(function(){
 	  // Re-render the contents of the todo item.
 	  render: function() {
 	    $(this.el).html(this.template(this.model.toJSON()));
-	    //this.setContent();
+
+			// must mannually bind blur since it is not a delagate-able event.
+			this.$('input').bind('blur', this.blur);
+
 	    return this;
 	  },
 
-	  // To avoid XSS (not that it would be harmful in this particular app),
-	  // we use `jQuery.text` to set the contents of the todo item.
-	  /*
-		setContent: function() {
-	    var content = this.model.get('content');
-	    this.$('.todo-content').text(content);
-	    this.input = this.$('.todo-input');
-	    this.input.bind('blur', this.close);
-	    this.input.val(content);
-	  },*/
+		moveNextOnEnter: function(e) {
+			
+			if (e.keyCode == 13) this.moveNext();
+		},
 
-	  // Switch this view into `"editing"` mode, displaying the input field.
-	  edit: function() {
-	    $(this.el).addClass("editing");
-	    this.input.focus();
-	  },
+		moveNext: function() {
+			
+			var next_pair = $(this.el).next('section').find('input:first-child');
+			
+			if (next_pair.length > 0) {
+				
+				next_pair.focus();
 
-	  // Close the `"editing"` mode, saving changes to the todo.
-	  close: function() {
-	    this.model.save({content: this.input.val()});
-	    $(this.el).removeClass("editing");
-	  },
+			} else {
+				
+				MyApp.create();				
+			}
+		},
 
 	  focus: function(e) {
 
@@ -82,11 +74,23 @@ $(function(){
 		
 			MyApp.focused_pair = this;
 	  },
+	
+		// automatically save when the user has finished editing a word
+		blur: function(e) {
+			
+			// unfortunately "blur" does not work for delegate-able events.
+			// let's manually set "this"
+			var self = MyApp.focused_pair;
+			
+			var update = {
+					a: self.$('input[name=a]').val(),
+					b: self.$('input[name=b]').val()
+			};
 
-	  // If you hit `enter`, we're through editing the item.
-	  /*updateOnEnter: function(e) {
-	    if (e.keyCode == 13) this.close();
-	  },*/
+			self.model.save(update);
+			
+			console.log('saved');
+		},
 
 	  // Remove this view from the DOM.
 	  remove: function() {

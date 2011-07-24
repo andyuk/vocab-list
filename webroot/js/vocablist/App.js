@@ -3,6 +3,9 @@ window.VocabList = {
 	Model: {}
 };
 
+// Hack: This needs is defined before MyApp exists 
+window.LastFocused = null;
+
 $(function(){
 
 	// The collection of todos is backed by *localStorage* instead of a remote
@@ -16,8 +19,10 @@ $(function(){
 	  localStorage: new Store("vocablist")
 
 	});
-
-  window.MyList = new VocabList.Collection;  
+	 
 	window.MyApp = new VocabList.View.App;
+  window.MyApp.list.fetch();
+
+	$('#vocab section:first-child input:first-child').trigger('focus');
 
 });
