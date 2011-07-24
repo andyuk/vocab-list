@@ -51,11 +51,10 @@
 		  <h1 id="main-logo"><span>Vocab</span>list</h1>
     </header>
 
-    <div id="vocab" role="main">
-	
+    <div id="vocab" role="main">	
+			<!--
 			<section>
 				<input type="text" name="a" value="Lorem ipsum"><input type="text" name="b" value="Lorem ipsum"></section>
-			
 			<section>
 			<input type="text" name="a" value="Lorem ipsum"><input type="text" name="b" value="Lorem ipsum">
 			</section>
@@ -71,20 +70,28 @@
 			<section>
 				<input type="text" name="a" value="Lorem ipsum"><input type="text" name="b" value="Lorem ipsum">
 			</section>
+			-->
 			
     </div>
-    <div id="icon-add"></div>
-
-    <footer>
-
-    </footer>
-
+    <div id="add-button"></div>
+	  <div id="edit-tools" style="display:none">
+			<!--<button class="move">Move</button>-->
+	  	<button id="remove-button">Remove</button>
+	  </div>
+	
   </div> <!--! end of #container -->
 
-  <div id="edit-tools" style="display:none">
-		<button class="move">Move</button>
-  	<button class="remove">Remove</button>
-  </div>
+	<!--
+  <footer>
+		
+  </footer>
+	-->
+
+	<!-- Templates -->
+
+  <script type="text/template" id="vocabpair-template">
+			<input type="text" name="a" value="<%= a %>"><input type="text" name="b" value="<%= b %>">
+  </script>
 
   <!-- JavaScript at the bottom for fast page loading -->
 
@@ -95,13 +102,21 @@
   <!-- scripts concatenated and minified via ant build script 
   <script src="js/mylibs/helper.js"></script>-->
   <!-- end concatenated and minified scripts-->
-  
-  <script src="js/raphael-min.js"></script>
-	<script src="js/script.js"></script>
+
+	<script src="js/libs/underscore-1.1.6.js"></script>   
+	<script src="js/libs/backbone.js"></script>
+	<script src="js/libs/backbone-localstorage.js"></script>	
+  <script src="js/libs/raphael-min.js"></script>
+	<script src="js/icons.js"></script>
+
+	<script src="js/vocablist/model/VocabPair.js"></script>	
+	<script src="js/vocablist/view/VocabPair.js"></script>
+	<script src="js/vocablist/view/App.js"></script>	
+	<script src="js/vocablist/App.js"></script>
 
   <script>
     // iPhone Scale Bug Fix, read this when using http://www.blog.highub.com/mobile-2/a-fix-for-iphone-viewport-scale-bug/
-    MBP.scaleFix();
+    //MBP.scaleFix();
     
     // Media Queries Polyfill https://github.com/shichuan/mobile-html5-boilerplate/wiki/Media-Queries-Polyfill
     yepnope({

@@ -164,12 +164,16 @@ a, a:active, a:visited { color: #607890; }
 a:hover { color: #036; }
 
 
-#container { margin:30px auto; text-align: left; border: 0px solid red; width: 600px }
+#container { margin:30px auto; text-align: left; border: 0px solid red; width: 766px }
 #vocab section { border: none; }
 #vocab section input { 
-width: 283px; 
+background: none;
+outline: none;
+border-radius: 0px;
+-webkit-appearance: none;
+width: 360px; 
 border: none;
-padding: 8px; 
+padding: 10px; 
 }
 #vocab section.active {
 border: 1px solid #FF59A7;
@@ -184,6 +188,10 @@ outline:none;
 
 /* using sv & canvas as icons */
 canvas, svg { cursor: pointer; }
+
+div#icon-add {
+	margin: 8px;
+}
 
 div#edit-tools {
 text-align: right;
