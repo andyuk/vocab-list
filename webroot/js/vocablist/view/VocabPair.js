@@ -3,13 +3,10 @@ $(function(){
 	// The DOM element for a todo item...
 	window.VocabList.View.VocabPair = Backbone.View.extend({
 
-	  //... is a list tag.
-	  tagName:  "section",
+	  tagName:  "li",
 
-	  // Cache the template function for a single item.
 	  template: _.template($('#vocabpair-template').html()),
 
-	  // The DOM events specific to an item.
 	  events: {
 	    "focus input":     "focus",
 			"keypress input":  "moveNextOnEnter"
@@ -29,7 +26,7 @@ $(function(){
 			if (this.height !== null) {
 				return this.height;
 			}
-			this.height = $('#vocab section:first-child').height();
+			this.height = $('#vocab-list li:first-child').height();
 		
 			return this.height;
 		},
@@ -51,7 +48,7 @@ $(function(){
 
 		moveNext: function() {
 			
-			var next_pair = $(this.el).next('section').find('input:first-child');
+			var next_pair = $(this.el).next('li').find('input:first-child');
 			
 			if (next_pair.length > 0) {
 				
@@ -65,12 +62,12 @@ $(function(){
 
 	  focus: function(e) {
 
-			$('#vocab section.active').removeClass('active');
+			$('#vocab-list li.active').removeClass('active');
 		
-			var section = $(this.el);
-			section.addClass('active');
+			var li = $(this.el);
+			li.addClass('active');
 
-			$('#edit-tools').css({top: section.position().top + this.getHeight()+1}).show();
+			$('#edit-tools').css({top: li.position().top + this.getHeight()+1}).show();
 		
 			MyApp.focused_pair = this;
 	  },

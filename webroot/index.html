@@ -1,8 +1,8 @@
 ﻿<!doctype html>
 <!-- Conditional comment for mobile ie7 http://blogs.msdn.com/b/iemobile/ -->
 <!-- Appcache Facts http://appcachefacts.info/ -->
-<!--[if IEMobile 7 ]>    <html class="no-js iem7" manifest="default.appcache?v=1"> <![endif]-->
-<!--[if (gt IEMobile 7)|!(IEMobile)]><!--> <html class="no-js" manifest="default.appcache?v=1"> <!--<![endif]-->
+<!--[if IEMobile 7 ]>    <html class="no-js iem7" manifest=".manifest?v=1"> <![endif]-->
+<!--[if (gt IEMobile 7)|!(IEMobile)]><!--> <html class="no-js" manifest=".manifest?v=1"> <!--<![endif]-->
 
 <head>
   <meta charset="utf-8">
@@ -37,7 +37,7 @@
 	<!-- more tags for your 'head' to consider https://gist.github.com/849231 -->
   
   <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=1">
+  <link rel="stylesheet" href="css/style.css?v=2">
  
   <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
   <script src="js/libs/modernizr-custom.js"></script>
@@ -51,28 +51,10 @@
 		  <h1 id="main-logo"><span>vocab</span>list</h1>
     </header>
 
-    <div id="vocab" role="main">	
-			<!--
-			<section>
-				<input type="text" name="a" value="Lorem ipsum"><input type="text" name="b" value="Lorem ipsum"></section>
-			<section>
-			<input type="text" name="a" value="Lorem ipsum"><input type="text" name="b" value="Lorem ipsum">
-			</section>
-			
-			<section>
-				<input type="text" name="a" value="Lorem ipsum"><input type="text" name="b" value="Lorem ipsum">
-			</section>
-			
-			<section>
-				<input type="text" name="a" value="Lorem ipsum"><input type="text" name="b" value="Lorem ipsum">
-			</section>
-			
-			<section>
-				<input type="text" name="a" value="Lorem ipsum"><input type="text" name="b" value="Lorem ipsum">
-			</section>
-			-->
-			
+    <div id="vocab" role="main">
+			<ul id="vocab-list"></ul>
     </div>
+
     <div id="add-button"></div>
 	  <div id="edit-tools" style="display:none">
 			<!--<button class="move">Move</button>-->

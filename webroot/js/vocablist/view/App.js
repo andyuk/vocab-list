@@ -26,8 +26,17 @@ $(function(){
       this.list.bind('reset',   this.addAll);
       this.list.bind('all',     this.render);
 
+			
 			this.initEditTools();			
     },
+
+		// set width of text boxes via JS since CSS cannot calculate 50% of screen + 10px padding.
+		/*resizeTextBoxes: function() {
+			
+			var input_width = ($('body').width()-42/2); // 42 is magic number
+			console.log('setting width as ' + input_width)
+			$('#vocab-list li input').css('width', input_width);
+		},*/
 
 		initEditTools: function() {
 			
@@ -40,6 +49,7 @@ $(function(){
     // Re-rendering the App just means refreshing the statistics -- the rest
     // of the app doesn't change.
     render: function() {
+	
       /*this.$('#todo-stats').html(this.statsTemplate({
         total:      Todos.length,
         done:       Todos.done().length,
@@ -50,7 +60,7 @@ $(function(){
     addOne: function(pair) {
       var view = new VocabList.View.VocabPair({model: pair});
 
-      this.$("#vocab").append(view.render().el);
+      this.$("#vocab-list").append(view.render().el);
     },
 
     // Add all items in the **Todos** collection at once.
@@ -61,7 +71,7 @@ $(function(){
     create: function(e) {
       
 			var new_pair = this.list.create(this.newAttributes());
-			MyApp.$('section:last-child input:first-child').focus();
+			MyApp.$('li:last-child input:first-child').focus();
     },
 		
     // Generate the attributes for a new Todo item.
@@ -76,11 +86,11 @@ $(function(){
 		remove: function() {
 			
 			// find next pair to focus on
-			var next_pair = $(this.focused_pair.el).next('section').find('input:first-child');
+			var next_pair = $(this.focused_pair.el).next('li').find('input:first-child');
 			
 			if (next_pair.length === 0) {
 				
-				next_pair = $(this.focused_pair.el).prev('section').find('input:first-child');
+				next_pair = $(this.focused_pair.el).prev('li').find('input:first-child');
 			}
 						
 			this.focused_pair.clear();

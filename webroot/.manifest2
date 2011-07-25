@@ -1,0 +1,28 @@
+CACHE MANIFEST
+# version 3
+img/l/apple-touch-icon.png
+img/l/apple-touch-icon-precomposed.png
+img/l/splash.png
+img/m/apple-touch-icon.png
+img/h/apple-touch-icon.png
+img/h/splash.png
+css/style.css?v=2
+js/libs/jquery-1.5.1.min.js
+js/libs/respond.min.js
+js/libs/modernizr-custom.js
+js/libs/underscore-1.1.6.js   
+js/libs/backbone.js
+js/libs/backbone-localstorage.js	
+js/libs/raphael-min.js
+js/icons.js
+
+js/vocablist/model/VocabPair.js	
+js/vocablist/view/VocabPair.js
+js/vocablist/view/App.js	
+js/vocablist/App.js
+
+NETWORK:
+http://www.google-analytics.com
+http://ajax.googleapis.com
+
+FALLBACK:
