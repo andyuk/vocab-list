@@ -1,0 +1,44 @@
+
+POST /{dbname}/_bulk_docs
+{
+  "docs": [
+		{"_id": "23423432"} // new doc
+    {"_id": "0", "_rev": "1-62657917", "integer": 10, "string": "10"},
+    {"_id": "1", "_rev": "2-1579510027", "integer": 2, "string": "2"},
+    {"_id": "2", "_rev": "2-3978456339", "integer": 3, "string": "3"},
+    {"_id": "3", "_rev": "1-62657917", "_deleted": true},
+  ]
+}
+
+Sample response:
+
+[
+    {"id":"0","error":"conflict","reason":"Document update conflict."},
+    {"id":"1","rev":"2-1579510027"},
+    {"id":"2","rev":"2-3978456339"}
+]
+
+
+POST /sync
+
+response:
+
+{success: true, updates: {..}} // updates include new revision numbers
+{success: true, updates: {...}} // updates can also include latest doc if conflict occurs
+{success: false, error: "Reason why it was not successful."}
+
+if conflicts occur, return the current doc so it can be updated/deleted
+
+{success: true,
+	updates: [{
+		_id: "34324",
+		// key/values go here
+	},
+	{
+		_id: "23434",
+		"_deleted": true		
+	}
+	]
+}
+
+
