@@ -1,13 +1,19 @@
 var express = require('./node_modules/express');
 var http = require('http');
+var sys = require('sys');
 
 var api_version = '0.1';
 var api_url = '/api/' + api_version + '/';
+
+var db_host = '127.0.0.1',
+		db_port = 5984,
+		db_name = 'vocab-list';
 
 var app = express.createServer(
     express.favicon()
   , express.logger()
   , express.static(__dirname + './../webroot/')
+	, express.bodyParser()
 );
 
 // position our routes above the error handling middleware,
@@ -39,26 +45,42 @@ app.get(api_url, function(req, res, next){
 	res.send({"version": api_version});
 });
 
-app.get(api_url + 'sync', function(req, res, next){
+app.post(api_url + 'sync', function(req, res, next){
+	
+	var data = req.body.data;
+	console.log(req.body.data);
+	
+	if (data === undefined) {
+		
+		res.send({ error: "Invalid request. No data supplied. Sorry!" }, 500);
+		next();
+		return;
+	}
+	
+	//data = JSON.parse(data);
 	
 	var options = {
-								port: 5984,
-								host: '127.0.0.1',
-								method: 'GET',
-								path: '/'
+								port: db_port,
+								host: db_host,
+								method: 'POST',
+								path: '/' + db_name + '/_bulk_docs',
+								headers: {
+										'Content-Type': 'application/json'	
+									}
 								};
 
 	var api_response = "";
 
 	var couch_request = http.request(options, function(response) {
 		
-	  console.log('STATUS: ' + response.statusCode);
-	  console.log('HEADERS: ' + JSON.stringify(response.headers));
+	  //console.log('STATUS: ' + response.statusCode);
+	  //console.log('HEADERS: ' + JSON.stringify(response.headers));
 	  response.setEncoding('utf8');
+	
 	  response.on('data', function (chunk) {
 		
 			api_response = api_response + chunk;
-	    console.log('BODY: ' + chunk);
+	    //console.log('BODY: ' + chunk);
 	  });
 	
 		var onEnd = function() {
@@ -68,6 +90,7 @@ app.get(api_url + 'sync', function(req, res, next){
 		response.on('end', onEnd);
 
 	});
+	couch_request.write(data);
 	couch_request.end();
 
 });
