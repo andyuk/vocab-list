@@ -18,6 +18,12 @@ Sample response:
     {"id":"2","rev":"2-3978456339"}
 ]
 
+1. new
+2. update
+3. delete
+4. update conflict
+4. delete conflict?
+
 
 POST /sync
 
