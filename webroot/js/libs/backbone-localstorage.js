@@ -40,7 +40,15 @@ _.extend(Store.prototype, {
 
   // Update a model by replacing its copy in `this.data`.
   update: function(model) {
-    this.data[model._id] = model;
+	
+		var id = model._id || model.attributes._id;
+
+		if (id == undefined) {
+			console.log('no model._id! :');
+			console.log(model);
+		}
+	
+    this.data[id] = model;
     this.save();
     return model;
   },
@@ -58,8 +66,14 @@ _.extend(Store.prototype, {
   // Delete a model from `this.data`, returning it.
   destroy: function(model) {
 		var id = model.id || model._id;
+		if (id == undefined) {
+			console.log('no model._id! :');
+			console.log(model);
+		}
+		
     delete this.data[id];
     this.save();
+		console.log('destroying object in localStorage:' + id);
     return model;
   }
 

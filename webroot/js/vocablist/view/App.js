@@ -98,9 +98,16 @@ $(function(){
 				next_pair = $(this.focused_pair.el).prev('li').find('input:first-child');
 			}
 
-			console.log('removing line');						
-			this.focused_pair.clear();
+			console.log('removing line');
 
+      this.focused_pair.remove();
+			// destroy the object a second later (to make sure the blur event has completed)
+			var to_destroy = this.focused_pair.model;
+			setTimeout(function() {
+				to_destroy.destroy();
+				console.log('destroying object');
+			},500);
+			
 			if (next_pair.length > 0) {
 				
 				next_pair.trigger('focus');

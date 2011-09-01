@@ -85,21 +85,14 @@ $(function(){
 			// let's manually set "this"
 			var self = MyApp.focused_pair;
 			
-			// before saving, check item has not been deleted. 
-			// Sometimes the blur event can be triggered after a record has been deleted.
-			if (! window.MyApp.list.localStorage.find(self)) {
+			var update = {
+					a: self.$('input[name=a]').val(),
+					b: self.$('input[name=b]').val()
+			};
+
+			self.model.save(update);
 			
-				console.log('could not find self, must have been removed just before blur event');
-			} else {
-			
-				var update = {
-						a: self.$('input[name=a]').val(),
-						b: self.$('input[name=b]').val()
-				};
-	
-				self.model.save(update);
-				console.log('blurred, saved: ' + JSON.stringify(self.model));
-			}
+			console.log('blurred, saved: ' + JSON.stringify(self.model));
 		},
 
 	  // Remove this view from the DOM.

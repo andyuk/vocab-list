@@ -19,10 +19,11 @@ $(function(){
 	  },
 
     // Remove this Todo from *localStorage* and delete its view.
-    clear: function() {
-      this.destroy();
+    remove: function() {
+      //this.destroy();
       this.view.remove();
     }
+
 	});
 	
 });
