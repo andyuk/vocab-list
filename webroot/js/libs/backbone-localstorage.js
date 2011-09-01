@@ -65,15 +65,20 @@ _.extend(Store.prototype, {
 
   // Delete a model from `this.data`, returning it.
   destroy: function(model) {
-		var id = model.id || model._id;
-		if (id == undefined) {
-			console.log('no model._id! :');
-			console.log(model);
+		model.attributes._deleted = true;
+		if (("_rev" in model.attributes) === false) {
+			
+			var id = model._id || model.attributes._id;
+			delete this.data[id];
+			
+			console.log('destroying ' + model.attributes._id);
+			
+		} else {
+			
+			this.update(model);
+			console.log('flagging as deleted ' + model.attributes._id);
 		}
 		
-    delete this.data[id];
-    this.save();
-		console.log('destroying object in localStorage:' + id);
     return model;
   }
 
