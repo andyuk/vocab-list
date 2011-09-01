@@ -25,7 +25,6 @@ $(function(){
       this.list.bind('add',     this.addOne);
       this.list.bind('reset',   this.addAll);
       this.list.bind('all',     this.render);
-
 			
 			this.initEditTools();			
     },
@@ -58,6 +57,12 @@ $(function(){
     },
 
     addOne: function(pair) {
+	
+			// hide deleted rows
+			if ("_deleted" in pair.attributes) {
+				return;
+			}
+	
       var view = new VocabList.View.VocabPair({model: pair});
 
       this.$("#vocab-list").append(view.render().el);
@@ -92,7 +97,8 @@ $(function(){
 				
 				next_pair = $(this.focused_pair.el).prev('li').find('input:first-child');
 			}
-						
+
+			console.log('removing line');						
 			this.focused_pair.clear();
 
 			if (next_pair.length > 0) {

@@ -1,3 +1,5 @@
+
+
 // A simple module to replace `Backbone.sync` with *localStorage*-based
 // persistence. Models are given GUIDS, and saved into a JSON object. Simple
 // as that.
@@ -30,22 +32,22 @@ _.extend(Store.prototype, {
   // Add a model, giving it a (hopefully)-unique GUID, if it doesn't already
   // have an id of it's own.
   create: function(model) {
-    if (!model.id) model.id = model.attributes.id = guid();
-    this.data[model.id] = model;
+    if (!model._id) model._id = model.attributes._id = guid();
+    this.data[model._id] = model;
     this.save();
     return model;
   },
 
   // Update a model by replacing its copy in `this.data`.
   update: function(model) {
-    this.data[model.id] = model;
+    this.data[model._id] = model;
     this.save();
     return model;
   },
 
   // Retrieve a model from `this.data` by id.
   find: function(model) {
-    return this.data[model.id];
+    return this.data[model._id];
   },
 
   // Return the array of all models currently in storage.
@@ -55,7 +57,8 @@ _.extend(Store.prototype, {
 
   // Delete a model from `this.data`, returning it.
   destroy: function(model) {
-    delete this.data[model.id];
+		var id = model.id || model._id;
+    delete this.data[id];
     this.save();
     return model;
   }
@@ -70,11 +73,16 @@ Backbone.sync = function(method, model, options) {
   var store = model.localStorage || model.collection.localStorage;
 
   switch (method) {
-    case "read":    resp = model.id ? store.find(model) : store.findAll(); break;
+    case "read":    resp = model._id ? store.find(model) : store.findAll(); break;
     case "create":  resp = store.create(model);                            break;
     case "update":  resp = store.update(model);                            break;
     case "delete":  resp = store.destroy(model);                           break;
   }
+
+	// now push changes to CouchDB
+	//var couchDB = model.couchDB || model.collection.couchDB;
+	//store.replicator.push(couchDB);
+	//console.log('pushed to couchDB');
 
   if (resp) {
     options.success(resp);

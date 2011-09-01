@@ -2,6 +2,8 @@ $(function(){
 
 	window.VocabList.Model.VocabPair = Backbone.Model.extend({
 
+		idAttribute: "_id",
+
 	  defaults: {
 	    a: '',
 			b: ''
