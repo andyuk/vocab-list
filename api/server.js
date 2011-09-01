@@ -1,6 +1,7 @@
 var express = require('./node_modules/express');
 var http = require('http');
 var sys = require('sys');
+var $_ = require('./node_modules/underscore-min');
 
 var api_version = '0.1';
 var api_url = '/api/' + api_version + '/';
@@ -45,54 +46,30 @@ app.get(api_url, function(req, res, next){
 	res.send({"version": api_version});
 });
 
+app.get(api_url + '_changes', function(req, res, next){
 
-
-var bulkDocsRequest = function(keys, callback) {
+	var since = req.query.since || '';
 
 	var options = {
-								port: db_port,
-								host: db_host,
-								method: 'POST',
-								path: '/' + db_name + '/_all_docs?include_docs=true',
-								headers: {
-										'Content-Type': 'application/json'	
-									}
+								method: 'GET',
+								path: '/' + db_name + '/_changes?include_docs=true'
 								};
 
-	var data = '{"keys":' + JSON.stringify(keys) + '}';
-	//console.log('Requesting new versions...');
-	//console.log(data);
-
-	var couch_request = http.request(options, function(response) {
-		
-		response.setEncoding('utf8');
-		
-		var buffer = '';
-		
-	  response.on('data', function (chunk) {
-			buffer += (chunk || '');
-	  });
-
-		var onEnd = function() {
-			
-			var json = JSON.parse(buffer);
-			
-			callback(json.rows);
-		};
-		
-	  response.on('close', onEnd);
-		response.on('end', onEnd);
-	});
-	couch_request.write(data);
-	couch_request.end();
+	if (since.length > 0) {
+		options.path += '&since=' + since;
+	}
 	
-};
+	couchRequest(options, null, function(json) {
+		
+		res.send(json);
+	});
+});
 
-
-app.post(api_url + 'sync', function(req, res, next){
+app.post(api_url + '_bulk_docs', function(req, res, next){
+	
+	console.log('_bulk_docs request');
 	
 	var data = req.body.data;
-	//console.log(req.body.data);
 	
 	if (data === undefined) {
 		
@@ -102,72 +79,76 @@ app.post(api_url + 'sync', function(req, res, next){
 	}
 	
 	var options = {
+								method: 'POST',
+								path: '/' + db_name + '/_bulk_docs'
+								};
+
+	console.log(data);
+
+	couchRequest(options, data, function(json) {
+		res.send(json);
+	});				
+});
+
+
+var couchRequest = function(options, data, callback) {
+
+	var request_options = {
+								method: 'POST',
+								path: '???',
 								port: db_port,
 								host: db_host,
-								method: 'POST',
-								path: '/' + db_name + '/_bulk_docs',
 								headers: {
 										'Content-Type': 'application/json'	
 									}
 								};
 
-	var couch_request = http.request(options, function(response) {
-		
-	  response.setEncoding('utf8');
-		var buffer = '';
+	request_options = $_.extend(request_options, options);
 	
+	console.log('path: ' + request_options.path);
+	
+	var couch_request = http.request(request_options, function(response) {
+		
+		response.setEncoding('utf8');
+		
+		var buffer = '';
 	  response.on('data', function (chunk) {
 			buffer += (chunk || '');
 	  });
-	
+
 		var onEnd = function() {
 			
-			// TODO: check if there are any conflicts, if so get the latest version
+			var json = JSON.parse(buffer);
 			
-			var updates = JSON.parse(buffer);
-			
-			if (updates != null && updates.length > 0) {
-			
-				var updated_docs = [];
-
-				for (var key in updates) {
-					
-					//console.log(updates[key]);
-					//console.log(updates[key].id);
-					updated_docs.push(updates[key].id);
-				}
-				
-				bulkDocsRequest(updated_docs, function(latest_docs) {
-					
-					//console.log('got latest:');
-					//console.log(latest_docs);
-					for (var key in latest_docs) {
-						
-						for (var i in updates) {
-							
-							if (latest_docs[key].id === updates[i].id) {
-								updates[i] = latest_docs[key].doc;
-							}
-						}
-					}
-					//console.log('now updated:');
-					//console.log(updates);
-					
-					res.send(updates);
-					
-				});
-			} else {
-				
-				res.send(updates);
-			}
-		}
+			callback(json);
+		};
+		
 	  response.on('close', onEnd);
 		response.on('end', onEnd);
-
 	});
-	couch_request.write(data);
+	
+	if (data != undefined) {
+		couch_request.write(data);
+	}
 	couch_request.end();
+}
 
-});
+/*
+var bulkDocsRequest = function(keys, callback) {
+
+	var options = {
+								path: '/' + db_name + '/_all_docs?include_docs=true'
+								};
+
+	var data = '{"keys":' + JSON.stringify(keys) + '}';
+	
+	//console.log('Requesting new versions...');
+	//console.log(data);
+	
+	couchRequest(options, null, function(json) {
+
+		callback(json);
+	});	
+};*/
 
 app.listen(3000);
