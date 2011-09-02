@@ -13,7 +13,9 @@ $(function(){
     // Delegated events for creating new items, and clearing completed ones.
     events: {
       "click #add-button":  "create",
-      "click #remove-button": "remove"
+      "click #remove-button": "remove",
+			"click #replicate-push": "replicatePush",
+			"click #replicate-pull": "replicatePull"
     },
 
     initialize: function() {
@@ -24,9 +26,17 @@ $(function(){
 
       this.list.bind('add',     this.addOne);
       this.list.bind('reset',   this.addAll);
-      this.list.bind('all',     this.render);
+      //this.list.bind('all',     this.render);
 			
 			this.initEditTools();			
+    },
+
+		
+    newAttributes: function() {
+      return {
+        a: '',
+				b: ''
+      };
     },
 
 		// set width of text boxes via JS since CSS cannot calculate 50% of screen + 10px padding.
@@ -68,8 +78,8 @@ $(function(){
       this.$("#vocab-list").append(view.render().el);
     },
 
-    // Add all items in the **Todos** collection at once.
     addAll: function() {
+			this.$("#vocab-list").empty();
       this.list.each(this.addOne);
     },
 
@@ -78,15 +88,23 @@ $(function(){
 			var new_pair = this.list.create(this.newAttributes());
 			MyApp.$('li:last-child input:first-child').focus();
     },
+
+		replicatePush: function() {
+			MyApp.list.localStorage.replicator.push(MyApp.list.couchDB, function() {
+				
+				MyApp.list.fetch();
+				console.log('Push complete');
+			});	
+		},
 		
-    // Generate the attributes for a new Todo item.
-    newAttributes: function() {
-      return {
-        a: '',
-				b: ''
-        //order:   Todos.nextOrder()
-      };
-    },
+		replicatePull: function() {
+			MyApp.list.localStorage.replicator.pull(MyApp.list.couchDB, function() {
+				
+				MyApp.list.fetch();
+				console.log('Pull complete');
+				
+			});
+		},		
 
 		remove: function() {
 			

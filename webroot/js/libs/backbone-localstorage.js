@@ -1,5 +1,5 @@
 
-
+/*
 // A simple module to replace `Backbone.sync` with *localStorage*-based
 // persistence. Models are given GUIDS, and saved into a JSON object. Simple
 // as that.
@@ -58,6 +58,10 @@ _.extend(Store.prototype, {
     return this.data[model._id];
   },
 
+  findById: function(id) {
+    return this.data[id];
+  },
+
   // Return the array of all models currently in storage.
   findAll: function() {
     return _.values(this.data);
@@ -82,7 +86,7 @@ _.extend(Store.prototype, {
     return model;
   }
 
-});
+});*/
 
 // Override `Backbone.sync` to use delegate to the model or collection's
 // *localStorage* property, which should be an instance of `Store`.
@@ -98,11 +102,13 @@ Backbone.sync = function(method, model, options) {
     case "delete":  resp = store.destroy(model);                           break;
   }
 
+	/*
 	// now push changes to CouchDB
-	//var couchDB = model.couchDB || model.collection.couchDB;
-	//store.replicator.push(couchDB);
-	//console.log('pushed to couchDB');
-
+	var couchDB = model.couchDB || model.collection.couchDB;
+	store.replicator.push(couchDB);
+	console.log('pushed to couchDB');
+	*/
+	
   if (resp) {
     options.success(resp);
   } else {
